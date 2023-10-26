@@ -23,7 +23,7 @@ class ImageDisplayFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        imagesViewModel = ViewModelProvider(requireActivity())[ImagesViewModel::class.java]
+        //imagesViewModel = ViewModelProvider(requireActivity())[ImagesViewModel::class.java]
         // If we have arguments
         arguments?.let { it ->
             // If we find the specific argument
@@ -33,7 +33,11 @@ class ImageDisplayFragment : Fragment() {
         }
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         // The inflated layout file is returned to the parent/host and displayed to the user
         return inflater.inflate(R.layout.fragment_image_display, container, false)
     }
@@ -43,24 +47,12 @@ class ImageDisplayFragment : Fragment() {
 
         // The recycler view is the root element of the Fragment's layout
         // as such the view argument passed to onViewCreated() is the RecyclerView
-        if(::images.isInitialized)
-        with (view as RecyclerView) {
-            adapter = CustomRecyclerAdapter(images)
-            layoutManager = GridLayoutManager(requireContext(), 2)
-        }
-    }
-
-    companion object {
-        fun newInstance(images: IntArray) =
-            ImageDisplayFragment().apply {
-                arguments = Bundle().apply {
-                    putIntArray(IMAGES_KEY, images)
+        with(view as RecyclerView) {
+            layoutManager = GridLayoutManager(context,2)
+            ViewModelProvider(requireActivity())[ImagesViewModel::class.java].getImages()
+                .observe(requireActivity()) { it ->
+                    adapter = CustomRecyclerAdapter(it)
                 }
-            }
-    }
-
-    fun setImages(_images: IntArray){
-        images = _images
-        view?.run{(view as RecyclerView).adapter = CustomRecyclerAdapter(images)}
+        }
     }
 }
