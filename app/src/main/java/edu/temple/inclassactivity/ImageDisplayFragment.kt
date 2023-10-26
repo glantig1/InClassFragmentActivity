@@ -9,6 +9,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 
@@ -17,9 +18,12 @@ const val IMAGES_KEY = "imageList"
 class ImageDisplayFragment : Fragment() {
 
     private lateinit var images: IntArray
+    lateinit var imagesViewModel: ImagesViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        imagesViewModel = ViewModelProvider(requireActivity())[ImagesViewModel::class.java]
         // If we have arguments
         arguments?.let { it ->
             // If we find the specific argument
